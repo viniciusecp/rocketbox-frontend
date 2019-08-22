@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: process.env.URL || "http://localhost:3333"
+  baseURL: "https://rocketbox-b.herokuapp.com"
 });
 
 export default api;

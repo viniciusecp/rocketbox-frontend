@@ -26,7 +26,7 @@ export default function Box({ match }) {
   }, [match.params.id]);
 
   useEffect(() => {
-    const socket = io(process.env.URL || "http://localhost:3333");
+    const socket = io("https://rocketbox-b.herokuapp.com");
     socket.emit("connectRoom", match.params.id);
 
     socket.on("file", data => setNewFile(data));
