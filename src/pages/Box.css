@@ -51,13 +51,22 @@
   border-top: 1px solid #eee;
 }
 
-.box-container ul li .fileInfo {
+.box-container ul li .actions-items {
+  display: flex;
+}
+
+.box-container ul li .actions-items .delete-icon {
+  cursor: pointer;
+}
+
+.box-container ul li .actions-items .file-info {
   display: flex;
   align-items: center;
   text-decoration: none;
+  margin-left: 10px;
 }
 
-.box-container ul li .fileInfo strong {
+.box-container ul li .actions-items .file-info strong {
   font-weight: normal;
   font-size: 14px;
   margin-left: 10px;
@@ -67,4 +76,30 @@
 .box-container ul li span {
   color: #999;
   font-size: 13px;
+}
+
+.notification {
+  height: 80px;
+  min-width: 300px;
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: #cfe5ff;
+  border: 1px solid #a5cff1;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 20px;
+}
+
+.notification strong {
+  font-size: 16px;
+  color: #333;
+}
+
+.notification p {
+  font-size: 14px;
+  color: #999;
+  margin-top: 5px;
 }

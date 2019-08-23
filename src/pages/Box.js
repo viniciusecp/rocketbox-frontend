@@ -6,7 +6,7 @@ import Dropzone from "react-dropzone";
 import io from "socket.io-client";
 import { Link } from "react-router-dom";
 
-import { MdInsertDriveFile } from "react-icons/md";
+import { MdInsertDriveFile, MdDelete } from "react-icons/md";
 
 import logo from "../assets/logo.svg";
 import "./Box.css";
@@ -14,6 +14,7 @@ import "./Box.css";
 export default function Box({ match }) {
   const [box, setBox] = useState({});
   const [newFile, setNewFile] = useState(null);
+  const [notification, setNotification] = useState(false);
 
   useEffect(() => {
     async function loadBoxes() {
@@ -26,7 +27,8 @@ export default function Box({ match }) {
   }, [match.params.id]);
 
   useEffect(() => {
-    const socket = io("https://rocketbox-b.herokuapp.com");
+    // const socket = io("https://rocketbox-b.herokuapp.com");
+    const socket = io("http://localhost:3333");
     socket.emit("connectRoom", match.params.id);
 
     socket.on("file", data => setNewFile(data));
@@ -35,6 +37,14 @@ export default function Box({ match }) {
   useEffect(() => {
     if (newFile) {
       setBox({ ...box, files: [newFile, ...box.files] });
+
+      setNotification({
+        action: "Arquivo adicionado!",
+        description: newFile.title
+      });
+      setTimeout(() => {
+        setNotification(false);
+      }, 5000);
     }
 
     setNewFile(null);
@@ -48,6 +58,14 @@ export default function Box({ match }) {
 
       api.post(`/boxes/${match.params.id}/files`, data);
     });
+  }
+
+  async function handleDeleteFile(fileId) {
+    await api.delete(`/boxes/${match.params.id}/files/${fileId}`);
+
+    const files = box.files.filter(file => file._id !== fileId);
+
+    setBox({ ...box, files });
   }
 
   return (
@@ -73,15 +91,23 @@ export default function Box({ match }) {
         {box.files &&
           box.files.map(file => (
             <li key={file._id}>
-              <a
-                className="fileInfo"
-                href={file.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <MdInsertDriveFile size={24} color="#a5cfff" />
-                <strong>{file.title}</strong>
-              </a>
+              <div className="actions-items">
+                <MdDelete
+                  className="delete-icon"
+                  size={24}
+                  color="#f00"
+                  onClick={() => handleDeleteFile(file._id)}
+                />
+                <a
+                  className="file-info"
+                  href={file.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <MdInsertDriveFile size={24} color="#a5cfff" />
+                  <strong>{file.title}</strong>
+                </a>
+              </div>
 
               <span>
                 há{" "}
@@ -92,6 +118,12 @@ export default function Box({ match }) {
             </li>
           ))}
       </ul>
+      {notification && (
+        <div className="notification">
+          <strong>{notification.action}</strong>
+          <p>{notification.description}</p>
+        </div>
+      )}
     </div>
   );
 }
