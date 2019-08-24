@@ -11,9 +11,12 @@
 
 .box-container header h1 {
   font-size: 21px;
-  padding-left: 15px;
-  margin-left: 15px;
+  /* padding-left: 15px; */
+  padding: 0 15px;
+  /* margin-left: 15px; */
+  margin: 0 20px;
   border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
 }
 
 /* .box-container header button svg {
@@ -28,54 +31,27 @@
   border-radius: 4px;
   padding: 30px;
   text-align: center;
-  border: 1px dashed #ddd;
+  border: 2px dashed #ddd;
   color: #999;
   margin-top: 50px;
   cursor: pointer;
+
+  transition: height 0.2s ease;
+}
+
+.box-container .isDragActive {
+  border-color: #78e5d5;
+  color: #78e5d5;
+}
+
+.box-container .isDragReject {
+  border-color: #e57878;
+  color: #e57878;
 }
 
 .box-container ul {
   margin: 30px 0;
   list-style: none;
-}
-
-.box-container ul li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.box-container ul li + li {
-  padding-top: 20px;
-  margin-top: 20px;
-  border-top: 1px solid #eee;
-}
-
-.box-container ul li .actions-items {
-  display: flex;
-}
-
-.box-container ul li .actions-items .delete-icon {
-  cursor: pointer;
-}
-
-.box-container ul li .actions-items .file-info {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  margin-left: 10px;
-}
-
-.box-container ul li .actions-items .file-info strong {
-  font-weight: normal;
-  font-size: 14px;
-  margin-left: 10px;
-  color: #333;
-}
-
-.box-container ul li span {
-  color: #999;
-  font-size: 13px;
 }
 
 .notification {

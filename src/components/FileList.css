@@ -1,0 +1,38 @@
+li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+li + li {
+  padding-top: 20px;
+  margin-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+li .file-info {
+  display: flex;
+}
+
+li .file-info .delete-icon {
+  cursor: pointer;
+}
+
+li .file-info .file-info {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  margin-left: 10px;
+}
+
+li .file-info .file-info strong {
+  font-weight: normal;
+  font-size: 14px;
+  margin-left: 10px;
+  color: #333;
+}
+
+li span {
+  color: #999;
+  font-size: 13px;
+}

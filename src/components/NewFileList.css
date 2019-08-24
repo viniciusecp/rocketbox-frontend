@@ -1,0 +1,51 @@
+li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+li + li {
+  padding-top: 20px;
+  margin-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+li .file-info {
+  display: flex;
+  align-items: center;
+}
+
+li .file-info .preview {
+  width: 36px;
+  height: 36px;
+  border-radius: 5px;
+  background-repeat: no-repeat;
+  background-size: cover; /* redimenciona a imagem da melhor forma */
+  background-position: 50% 50%; /* centraliza */
+  margin-right: 10px;
+}
+
+li .file-info .file-data {
+  display: flex;
+  flex-direction: column;
+}
+
+li .file-info .file-data strong {
+  font-weight: normal;
+  font-size: 14px;
+  color: #333;
+}
+
+li .file-info .file-data span {
+  font-size: 12px;
+  color: #999;
+  margin-top: 5px;
+}
+
+li .file-info .file-data span button {
+  border: 0;
+  background: transparent;
+  color: #e57878;
+  margin-left: 5px;
+  cursor: pointer;
+}
