@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { uniqueId } from "lodash";
 import filesize from "filesize";
 
-import { MdAutorenew } from "react-icons/md";
+import { MdAutorenew, MdCloudUpload, MdDelete } from "react-icons/md";
 
 import logo from "../assets/logo.svg";
 import "./Box.css";
@@ -19,11 +19,12 @@ export default class Box extends Component {
     boxId: this.props.match.params.id,
     box: { files: [] }, // precisa iniciar apenas o vetor, por causa do primeiro render
     notification: false,
-    newLayout: true
+    newLayout: true,
+    socketId: null
   };
 
   async componentDidMount() {
-    // this.subscribeToNewFiles();
+    this.subscribeToNewFiles();
 
     const response = await api.get(`/boxes/${this.state.boxId}`);
     const configuredFiles = response.data.files.map(file => ({
@@ -42,15 +43,55 @@ export default class Box extends Component {
     this.state.box.files.forEach(file => URL.revokeObjectURL(file.preview));
   }
 
-  subscribeToNewFiles = () => {
-    // const socket = io("https://rocketbox-b.herokuapp.com");
-    const socket = io("http://localhost:3333");
-    socket.emit("connectRoom", this.state.boxId);
+  subscribeToNewFiles = async () => {
+    const socket = io(process.env.REACT_APP_API_URL);
+
+    socket.on("connect", () => {
+      this.setState({ socketId: socket.id });
+
+      socket.emit("connectRoom", this.state.boxId);
+    });
 
     socket.on("file", data => {
+      if (data.socketId === this.state.socketId) return;
+
+      const newFile = {
+        id: data.file._id,
+        name: data.file.title,
+        readableSize: filesize(data.file.size),
+        preview: data.file.url,
+        uploaded: true,
+        url: data.file.url,
+        createdAt: data.file.createdAt
+      };
       this.setState({
-        box: { ...this.state.box, files: [data, ...this.state.box.files] },
-        notification: { action: "Arquivo adicionado!", description: data.title }
+        box: { ...this.state.box, files: [newFile, ...this.state.box.files] },
+        notification: {
+          type: "newFile",
+          title: "Arquivo adicionado!",
+          description: data.file.title
+        }
+      });
+
+      setTimeout(() => {
+        this.setState({ notification: false });
+      }, 5000);
+    });
+
+    socket.on("deleteFile", data => {
+      if (data.socketId === this.state.socketId) return;
+
+      const files = this.state.box.files.filter(
+        file => file.id !== data.file._id
+      );
+
+      this.setState({
+        box: { ...this.state.box, files },
+        notification: {
+          type: "deleteFile",
+          title: "Arquivo deletado!",
+          description: data.file.title
+        }
       });
 
       setTimeout(() => {
@@ -86,12 +127,16 @@ export default class Box extends Component {
     const data = new FormData();
 
     data.append("file", uploadedFile.file, uploadedFile.name); // o name não é necessário, é mais pra reconhecimento no log
+    data.append("socketId", this.state.socketId);
 
     try {
       const response = await api.post(
         `/boxes/${this.state.boxId}/files`,
         data,
         {
+          headers: {
+            socketid: this.state.socketId
+          },
           onUploadProgress: e => {
             const progress = parseInt(Math.round((e.loaded * 100) / e.total)); // pra transformar em percentual
 
@@ -121,10 +166,14 @@ export default class Box extends Component {
   };
 
   handleDeleteFile = async fileId => {
-    await api.delete(`/boxes/${this.state.boxId}/files/${fileId}`);
+    await api.delete(`/boxes/${this.state.boxId}/files/${fileId}`, {
+      headers: {
+        socketid: this.state.socketId
+      }
+    });
 
     const files = this.state.box.files.filter(file => file.id !== fileId);
-    console.log(files);
+
     this.setState({ box: { ...this.state.box, files } });
   };
 
@@ -177,9 +226,17 @@ export default class Box extends Component {
         </ul>
 
         {notification && (
-          <div className="notification">
-            <strong>{notification.action}</strong>
-            <p>{notification.description}</p>
+          <div className={`notification ${notification.type}`}>
+            {notification.type === "newFile" ? (
+              <MdCloudUpload size={36} color="#333" />
+            ) : (
+              <MdDelete size={36} color="#333" />
+            )}
+
+            <div>
+              <strong>{notification.title}</strong>
+              <p>{notification.description}</p>
+            </div>
           </div>
         )}
       </div>

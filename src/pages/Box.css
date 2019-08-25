@@ -19,14 +19,6 @@
   border-right: 1px solid #ddd;
 }
 
-/* .box-container header button svg {
-  margin-right: 10px;
-} */
-
-/* .box-container header button:hover {
-  opacity: 0.9;
-} */
-
 .box-container .upload {
   border-radius: 4px;
   padding: 30px;
@@ -64,18 +56,29 @@
   border: 1px solid #a5cff1;
   border-radius: 4px;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  align-items: center;
   padding: 0 20px;
 }
 
-.notification strong {
+.newFile {
+  background: #cfe5ff;
+  border-color: #a5cff1;
+}
+
+.deleteFile {
+  background: #e57878;
+  border-color: #ce4848;
+}
+
+.notification div strong {
+  margin-left: 15px;
   font-size: 16px;
   color: #333;
 }
 
-.notification p {
+.notification div p {
+  margin-left: 15px;
   font-size: 14px;
-  color: #999;
+  color: #333;
   margin-top: 5px;
 }
