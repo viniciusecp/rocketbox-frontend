@@ -195,7 +195,10 @@ export default class Box extends Component {
           />
         </header>
 
-        <Dropzone accept="image/*" onDropAccepted={this.handleUpload}>
+        <Dropzone
+          // accept="image/*"
+          onDropAccepted={this.handleUpload}
+        >
           {({ getRootProps, getInputProps, isDragActive, isDragReject }) => (
             <div
               className={`upload 
